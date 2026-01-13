@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { authKeys } from "./authKeys";
-import { http } from "@/api/http";
-import { clearAccessToken } from "../utils/storage";
+import { authKeys } from "@/features/auth/hooks/authKeys";
+import { http } from "@/shared/api/http";
+import { clearAccessToken } from "@/features/auth/utils/storage";
 
 export function useLogout() {
   const qc = useQueryClient();

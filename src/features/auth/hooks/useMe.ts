@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { authKeys } from "./authKeys";
-import { http } from "@/api/http";
-import type { User } from "../types/user";
-import { getAccessToken } from "../utils/storage";
+import { authKeys } from "@/features/auth/hooks/authKeys";
+import { http } from "@/shared/api/http";
+import type { User } from "@/features/auth/types/user";
+import { getAccessToken } from "@/features/auth/utils/storage";
 
 export function useMe() {
   const token = getAccessToken();

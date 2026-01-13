@@ -1,10 +1,10 @@
-import { http } from "@/api/http";
+import { http } from "@/shared/api/http";
 import { setAccessToken } from "@/features/auth/utils/storage";
 import type { NestErrorResponse } from "@/shared/types/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import { authKeys } from "./authKeys";
-import type { User } from "../types/user";
+import { authKeys } from "@/features/auth/hooks/authKeys";
+import type { User } from "@/features/auth/types/user";
 
 interface LoginBody {
   loginId: string;
