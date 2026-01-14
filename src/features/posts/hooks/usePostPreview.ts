@@ -21,7 +21,7 @@ export function usePostPreview(
         payload: {
           title: title,
           content: html,
-          category: post?.publishInfo?.category.name || "임시 카테고리",
+          category: post?.publishInfo?.category?.name || "임시 카테고리",
           createdAt: dayjs(post?.createdAt).format('YYYY-MM-DD'),
         },
       },
