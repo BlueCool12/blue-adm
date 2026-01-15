@@ -1,12 +1,14 @@
-import { EditRounded, LockRounded, PersonAddRounded, SearchRounded } from "@mui/icons-material";
 import { Box, Button, Chip, CircularProgress, Container, IconButton, InputAdornment, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, TextField, Tooltip, Typography } from "@mui/material";
+import { LockRounded, ManageAccountsRounded, PersonAddRounded, SearchRounded } from "@mui/icons-material";
 import { useState } from "react";
-import { UserCreateModal } from "../components/UserCreateModal";
-import { useUsers } from "../hooks/useUsers";
+import { UserFormModal } from "@/features/users/components/UserFormModal";
+import { useUsers } from "@/features/users/hooks/useUsers";
+import type { User } from "@/features/users/types/user";
 
 export default function UserListPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
@@ -17,6 +19,16 @@ export default function UserListPage() {
   const isLocked = (lockedUntil: string | null) => {
     if (!lockedUntil) return false;
     return new Date(lockedUntil) > new Date();
+  };
+
+  const handleEditClick = (user: User) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
   };
 
   return (
@@ -46,7 +58,10 @@ export default function UserListPage() {
               width: { xs: '100%', sm: 'auto' }
             }}
             startIcon={<PersonAddRounded />}
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              setSelectedUser(null);
+              setIsModalOpen(true);
+            }}
           >
             계정 추가
           </Button>
@@ -137,8 +152,8 @@ export default function UserListPage() {
                     </TableCell>
 
                     <TableCell align="right">
-                      <IconButton size="small">
-                        <EditRounded fontSize="small" />
+                      <IconButton size="small" onClick={() => handleEditClick(user)}>
+                        <ManageAccountsRounded fontSize="small" />
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -167,9 +182,10 @@ export default function UserListPage() {
       </Stack>
 
       {/* 계정 생성 모달 */}
-      <UserCreateModal
+      <UserFormModal
         open={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseModal}
+        initialData={selectedUser ?? undefined}
       />
     </Container>
   );
