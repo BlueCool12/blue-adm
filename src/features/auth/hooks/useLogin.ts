@@ -4,7 +4,7 @@ import type { NestErrorResponse } from "@/shared/types/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { authKeys } from "@/features/auth/hooks/authKeys";
-import type { User } from "@/features/auth/types/auth-user";
+import type { User } from "@/features/users/types/user";
 
 interface LoginBody {
   loginId: string;
