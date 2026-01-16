@@ -1,7 +1,8 @@
 import { Header } from "@/shared/components/Header";
 import { Sidebar } from "@/shared/components/Sidebar";
+import { Loading } from "@/shared/components/Loading";
 import { Box, Drawer, styled } from "@mui/material";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Outlet } from "react-router-dom";
 
 const DRAWER_WIDTH = 260;
@@ -33,7 +34,9 @@ export function RootLayout() {
         <Header onDrawerToggle={handleDrawerToggle} />
 
         <Box component="main" sx={{ flex: 1, overflowY: 'auto', p: 3 }}>
-          <Outlet />
+          <Suspense fallback={<Loading />}>
+            <Outlet />
+          </Suspense>
         </Box>
       </Box>
 
