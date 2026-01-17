@@ -13,9 +13,11 @@ export default function CommentListPage() {
   const [page, setPage] = useState(1);
   const limit = 4;
 
+  const isRepliedFilter = tab === 0 ? undefined : (tab === 1 ? false : true);
+
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
-  const { data: comments, isLoading } = useComments({ page, limit });
+  const { data: comments, isLoading } = useComments({ page, limit, replied: isRepliedFilter });
 
   const { mutate: updateStatus, isPending: isUpdating } = useUpdateCommentStatus();
   const { mutate: createReply, isPending: isReplying } = useCreateReply();
@@ -62,6 +64,7 @@ export default function CommentListPage() {
       >
         <Tab label="전체 댓글" sx={{ fontWeight: 600 }} />
         <Tab label="답변 대기" sx={{ fontWeight: 600 }} />
+        <Tab label="답변 완료" sx={{ fontWeight: 600 }} />
       </Tabs>
 
       {isLoading ? (

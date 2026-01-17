@@ -6,6 +6,7 @@ import type { CommentStatus } from "@/features/comments/types/comment";
 export interface GetCommentsParams {
   page: number;
   limit: number;
+  replied?: boolean;
 }
 
 export interface CommentItem {
