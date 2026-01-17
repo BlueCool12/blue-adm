@@ -10,7 +10,14 @@ interface PostListResponse {
   lastPage: number;
 }
 
-export function usePosts(search: string, page: number) {
+export function usePosts(
+  search: string,
+  page: number,
+  status: string,
+  category?: number | 'ALL',
+  startDate?: string,
+  endDate?: string
+) {
   const [debouncedSearch, setDebouncedSearch] = useState(search);
 
   useEffect(() => {
@@ -22,13 +29,17 @@ export function usePosts(search: string, page: number) {
   }, [search]);
 
   return useQuery({
-    queryKey: ['posts', { search: debouncedSearch, page }],
+    queryKey: ['posts', { search: debouncedSearch, page, status, category, startDate, endDate }],
     queryFn: async () => {
       const { data } = await http.get<PostListResponse>('/posts', {
         params: {
           search: debouncedSearch || undefined,
           page,
-          limit: 10,
+          limit: 9,
+          status: status === 'ALL' ? undefined : status,
+          category: category === 'ALL' ? undefined : category,
+          startDate: startDate || undefined,
+          endDate: endDate || undefined,
         },
       });
 
