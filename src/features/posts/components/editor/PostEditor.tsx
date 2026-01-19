@@ -30,6 +30,7 @@ import type { PostEditorHandle, PostEditorProps } from '@/features/posts/compone
 import PostEditorTheme from '@/features/posts/components/editor/themes/PostEditorTheme';
 import { PostEditorNodes } from '@/features/posts/components/editor/nodes';
 import { PlaceholderText, StyledEditable } from '@/features/posts/components/editor/ui/PostEditorStyledComponents';
+import ColorPickerToolbar from './toolbar/ColorPickerToolbar';
 
 const editorConfig = {
   namespace: 'BlueCoolEditor',
@@ -44,7 +45,7 @@ export const PostEditor = forwardRef<PostEditorHandle, PostEditorProps>(
       <LexicalComposer initialConfig={editorConfig} >
         <Paper
           variant='outlined'
-          sx={{            
+          sx={{
             borderRadius: 2,
             overflow: 'hidden',
             bgcolor: 'background.paper',
@@ -77,6 +78,7 @@ export const PostEditor = forwardRef<PostEditorHandle, PostEditorProps>(
             <Divider orientation='vertical' flexItem sx={{ mx: 0.5, height: 24, alignSelf: 'center' }} />
 
             <TextFormatToolbar />
+            <ColorPickerToolbar />
             <Divider orientation='vertical' flexItem sx={{ mx: 0.5, height: 24, alignSelf: 'center' }} />
 
             <CodeBlockToolbar />
