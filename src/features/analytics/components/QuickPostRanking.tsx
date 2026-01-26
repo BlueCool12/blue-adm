@@ -1,14 +1,15 @@
-import { Avatar, List, ListItem, ListItemAvatar, ListItemText, Paper, Typography } from "@mui/material";
+import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Paper, Skeleton, Typography } from "@mui/material";
+import { useTopPosts } from "../hooks/useAnalytics";
+
+export interface QuickPostRankingProps {
+  id: string;
+  title: string;
+  views: number;
+}
 
 export const QuickPostRanking = () => {
 
-  const posts = [
-    { title: 'NestJS와 DDD 적용기', views: 120, color: '#1976d2' },
-    { title: 'MUI v6 가이드', views: 85, color: '#9c27b0' },
-    { title: '마라톤 훈련 일지', views: 64, color: '#2e7d32' },
-    { title: 'TS 인덱스 시그니처', views: 42, color: '#ed6c02' },
-    { title: 'Next.js 14 마이그레이션', views: 31, color: '#d32f2f' },
-  ];
+  const { data: posts, isLoading } = useTopPosts(5);
 
   return (
     <Paper sx={{ p: 3, height: '100%', minHeight: 350, display: 'flex', flexDirection: 'column' }}>
@@ -16,39 +17,63 @@ export const QuickPostRanking = () => {
         실시간 인기 콘텐츠
       </Typography>
 
-      <List sx={{ flexGrow: 1 }}>
-        {posts.map((post, index) => (
-          <ListItem key={index} sx={{ px: 1 }}>
-            <ListItemAvatar sx={{ minWidth: 40 }}>
-              <Avatar
-                sx={{
-                  width: 24,
-                  height: 24,
-                  fontSize: '0.75rem',
-                  bgcolor: index < 3 ? 'primary.main' : 'action.disabled'
+      {isLoading ? (
+        <List sx={{ flexGrow: 1 }}>
+          {[1, 2, 3, 4, 5].map((item) => (
+            <ListItem key={item} sx={{ px: 1 }}>
+              <ListItemAvatar sx={{ minWidth: 40 }}>
+                <Skeleton variant="circular" width={24} height={24} />
+              </ListItemAvatar>
+              <Box sx={{ width: '100%' }}>
+                <Skeleton variant="text" width="80%" />
+                <Skeleton variant="text" width="40%" height={15} />
+              </Box>
+            </ListItem>
+          ))}
+        </List>
+      ) : (
+        <List sx={{ flexGrow: 1 }}>
+          {posts?.length === 0 && (
+            <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Typography variant="body2" color="text.secondary">
+                데이터가 없습니다.
+              </Typography>
+            </Box>
+          )}
+
+          {posts?.map((post, index) => (
+            <ListItem key={index} sx={{ px: 1 }}>
+              <ListItemAvatar sx={{ minWidth: 40 }}>
+                <Avatar
+                  sx={{
+                    width: 24,
+                    height: 24,
+                    fontSize: '0.75rem',
+                    bgcolor: index < 3 ? 'primary.main' : 'action.disabled'
+                  }}
+                >
+                  {index + 1}
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText
+                primary={post.title}
+                secondary={`${post.views} views today`}
+                slotProps={{
+                  primary: {
+                    variant: 'body2',
+                    fontWeight: 'medium',
+                    noWrap: true,
+                  },
+                  secondary: {
+                    variant: 'caption',
+                    color: 'text.secondary',
+                  }
                 }}
-              >
-                {index + 1}
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText
-              primary={post.title}
-              secondary={`${post.views} views today`}
-              slotProps={{
-                primary: {
-                  variant: 'body2',
-                  fontWeight: 'medium',
-                  noWrap: true,
-                },
-                secondary: {
-                  variant: 'caption',
-                  color: 'text.secondary',
-                }
-              }}
-            />
-          </ListItem>
-        ))}
-      </List>
+              />
+            </ListItem>
+          ))}
+        </List>
+      )}
     </Paper>
   );
 }

@@ -56,7 +56,7 @@ export default function DashboardPage() {
                         <Box sx={{ height: 300, width: '100%' }}>
                             <LineChart
                                 dataset={trend}
-                                xAxis={[{ scaleType: 'point', dataKey: 'day' }]}
+                                xAxis={[{ scaleType: 'point', dataKey: 'date' }]}
                                 series={[
                                     { dataKey: 'pv', label: '페이지뷰', area: true, color: alpha(theme.palette.primary.main, 0.2) },
                                     { dataKey: 'uv', label: '방문자', color: theme.palette.primary.main },
@@ -115,7 +115,7 @@ export default function DashboardPage() {
                                     <ListItemButton LinkComponent="a" href={`/posts/${post.id}/edit`}>
                                         <ListItemText
                                             primary={`${index + 1}. ${post.title}`}
-                                            secondary={`조회수: ${post.viewCount}회`}
+                                            secondary={`조회수: ${post.views}회`}
                                         />
                                     </ListItemButton>
                                 </ListItem>

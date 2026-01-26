@@ -1,7 +1,7 @@
-import { Box, Paper, Skeleton, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import { LineChart } from "@mui/x-charts";
 
-interface TrafficData {
+export interface TrafficData {
   date: string;
   pv: number;
   uv: number;
@@ -10,29 +10,34 @@ interface TrafficData {
 
 interface TrafficChartProps {
   data: TrafficData[];
-  loading?: boolean;
 }
 
-export const TrafficChart = ({ data, loading }: TrafficChartProps) => {
+export const TrafficChart = ({ data }: TrafficChartProps) => {
   const theme = useTheme();
 
-  if (loading) {
-    return <Skeleton variant="rectangular" height={400} sx={{ borderRadius: 2 }} />;
+  if (!data || data.length === 0) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: 2
+        }}
+      >
+        <Typography color="text.secondary">데이터가 없습니다.</Typography>
+      </Box>
+    );
   }
 
-  return (
-    <Paper sx={{ p: 3, height: '100%' }}>
-      <Typography variant="h6" sx={{ mb: 1, fontWeight: 'bold' }}>
-        방문자 추이
-      </Typography>
-
+  return (    
       <Box sx={{ width: '100%', height: 350 }}>
         <LineChart
           dataset={data}
           xAxis={[{
             dataKey: 'date',
             scaleType: 'point',
-            disableTicks: true,            
+            disableTicks: true,
           }]}
           series={[
             {
@@ -62,6 +67,5 @@ export const TrafficChart = ({ data, loading }: TrafficChartProps) => {
           grid={{ horizontal: true, vertical: true }}
         />
       </Box>
-    </Paper>
   );
 }

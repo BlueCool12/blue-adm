@@ -1,24 +1,22 @@
 import { Box, Chip, Paper, Typography } from '@mui/material';
-import { DataGrid, type GridColDef } from '@mui/x-data-grid';
+import { DataGrid, type GridPaginationModel, type GridColDef } from '@mui/x-data-grid';
 import { koKR } from '@mui/x-data-grid/locales';
+import { useState } from 'react';
+import { usePostPerformance } from '../hooks/useAnalytics';
 
 interface PostStat {
   id: number;
   title: string;
   slug: string;
-  views: number;
-  uniqueVisitors: number;
-  avgDuration: string;
   publishedAt: string;
+  views: number;  
+  uv: number;
 }
 
-const rows: PostStat[] = [
-  { id: 1, title: 'NestJS와 Domain-Driven Design 적용기', slug: '/nestjs-ddd', views: 1240, uniqueVisitors: 850, avgDuration: '3m 20s', publishedAt: '2026-01-15' },
-  { id: 2, title: 'React MUI로 깔끔한 어드민 페이지 만들기', slug: '/mui-admin-tips', views: 980, uniqueVisitors: 720, avgDuration: '2m 45s', publishedAt: '2026-01-18' },
-  { id: 3, title: 'Next.js 14 App Router 마이그레이션 가이드', slug: '/nextjs-14-guide', views: 850, uniqueVisitors: 610, avgDuration: '4m 10s', publishedAt: '2026-01-20' },
-  { id: 4, title: '풀마라톤 서브4 달성을 위한 훈련 일지', slug: '/marathon-sub4', views: 520, uniqueVisitors: 300, avgDuration: '1m 50s', publishedAt: '2026-01-12' },
-  { id: 5, title: 'TypeScript 인덱스 시그니처 이해하기', slug: '/ts-index-signature', views: 430, uniqueVisitors: 280, avgDuration: '5m 15s', publishedAt: '2026-01-22' },
-];
+export interface PaginatedPostPerformance {
+  items: PostStat[];
+  total: number;
+}
 
 const columns: GridColDef[] = [
   {
@@ -49,16 +47,29 @@ const columns: GridColDef[] = [
     )
   },
   {
-    field: 'uniqueVisitors',
+    field: 'uv',
     headerName: '방문자(UV)',
     type: 'number',
     flex: 1,
+    valueFormatter: (value) => Number(value).toLocaleString()
   },
-  { field: 'avgDuration', headerName: '평균 체류시간', flex: 1 },
-  { field: 'publishedAt', headerName: '게시일', flex: 1 },
+  {
+    field: 'publishedAt',
+    headerName: '게시일',
+    flex: 1,
+    valueFormatter: (value) => new Date(value).toLocaleString()
+  },
+  // { field: 'avgDuration', headerName: '평균 체류시간', flex: 1 },
 ];
 
 export const PostPerformanceTable = () => {
+
+  const [paginationModel, setPaginationModel] = useState<GridPaginationModel>({
+    page: 0,
+    pageSize: 5,
+  });
+
+  const { data, isLoading } = usePostPerformance(paginationModel.page + 1, paginationModel.pageSize);
 
   return (
     <Paper sx={{ p: 3, width: '100%' }}>
@@ -68,13 +79,16 @@ export const PostPerformanceTable = () => {
 
       <Box sx={{ width: '100%' }}>
         <DataGrid
-          rows={rows}
+          rows={data?.items ?? []}
           columns={columns}
-          initialState={{
-            pagination: { paginationModel: { pageSize: 5 } },
-          }}
+          loading={isLoading}
+          paginationMode='server'
+          rowCount={data?.total ?? 0}
+          paginationModel={paginationModel}
+          onPaginationModelChange={setPaginationModel}
           pageSizeOptions={[5, 10, 20]}
           disableRowSelectionOnClick
+          disableColumnMenu          
           autoHeight
           sx={{
             border: 'none',
