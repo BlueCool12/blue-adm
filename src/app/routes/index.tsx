@@ -6,6 +6,7 @@ import { Loading } from "@/shared/components/Loading";
 
 const LoginPage = lazy(() => import("@/features/auth/pages/LoginPage"));
 const DashboardPage = lazy(() => import("@/features/dashboard/pages/DashboardPage"));
+const AnalyticsPage = lazy(() => import("@/features/analytics/pages/AnalyticsPage"));
 const PostListPage = lazy(() => import("@/features/posts/pages/PostListPage"));
 const PostEditPage = lazy(() => import("@/features/posts/pages/PostEditPage"));
 const CategoryListPage = lazy(() => import("@/features/categories/pages/CategoryListPage"));
@@ -34,6 +35,12 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <Navigate to="dashboard" replace /> },
           { path: "dashboard", element: <DashboardPage /> },
+          {
+            path: "analytics",
+            children: [
+              { index: true, element: <AnalyticsPage /> }
+            ]
+          },
           {
             path: "posts",
             children: [

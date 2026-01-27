@@ -9,7 +9,7 @@ export interface DashboardSummary {
 }
 
 export interface DailyTrend {
-  day: string;
+  date: string;
   pv: number;
   uv: number;
   [key: string]: string | number;
@@ -24,9 +24,8 @@ export interface RecentComment {
 
 export interface WeeklyTopPosts {
   id: string;
-  title: string;
-  slug: string;
-  viewCount: number;
+  title: string;  
+  views: number;
 }
 
 export interface DashboardStatsResponse {

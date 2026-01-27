@@ -1,0 +1,1 @@
+export type TrafficRange = '7d' | '30d';

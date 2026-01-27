@@ -1,11 +1,12 @@
 import { Avatar, Box, Button, CircularProgress, Divider, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Typography } from "@mui/material";
-import { AddRounded, CategoryRounded, CommentRounded, DashboardRounded, DescriptionRounded, ForumRounded, LanguageRounded, PeopleAltRounded, SettingsRounded } from "@mui/icons-material";
+import { AddRounded, AnalyticsRounded, CategoryRounded, CommentRounded, DashboardRounded, DescriptionRounded, ForumRounded, LanguageRounded, PeopleAltRounded, SettingsRounded } from "@mui/icons-material";
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import { useCreateDraft } from "@/features/posts/hooks/useCreateDraft";
 import { useMe } from "@/features/auth/hooks/useMe";
 
 const NAV_ITEMS = [
   { text: '대시보드', icon: <DashboardRounded />, path: '/dashboard' },
+  { text: '통계', icon: <AnalyticsRounded />, path: '/analytics' },
   { text: '글 관리', icon: <DescriptionRounded />, path: '/posts' },
   { text: '카테고리 관리', icon: <CategoryRounded />, path: '/categories' },
   { text: '댓글 관리', icon: <CommentRounded />, path: '/comments' },

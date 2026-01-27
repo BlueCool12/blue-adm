@@ -22,6 +22,7 @@ export function Header({ onDrawerToggle }: HeaderProps) {
 
   const breadcrumbNameMap: Record<string, string> = {
     dashboard: '대시보드',
+    analytics: '통계',
     settings: '계정 설정',
     posts: '글 관리',
     edit: '글 작성',
