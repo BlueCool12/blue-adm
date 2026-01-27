@@ -7,10 +7,11 @@ const COLORS: Record<string, string> = {
   'Google': '#4285F4',
   'Naver': '#03C75A',
   'Daum': '#FEE500',
+  'GitHub': '#6E5494',
+  'OKKY': '#0090F9',
+  'JobKorea': '#003399',
+  'Social': '#9C27B0',
   'Direct': '#757575',
-  'Twitter': '#1DA1F2',
-  'Facebook': '#1877F2',
-  'Instagram': '#E1306C',
   'Others': '#FF9800',
 
   // 기기

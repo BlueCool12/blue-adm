@@ -26,7 +26,8 @@ const StatCard = ({ title, value, trend, unit, icon }: StatCardProps) => {
 
   const renderValue = () => {
     if (unit === '초') {
-      const { min, sec } = formatDuration(Number(value));
+      const roundedValue = Math.round(Number(value));
+      const { min, sec } = formatDuration(roundedValue);
       return (
         <Stack direction="row" alignItems="baseline" spacing={0.5}>
           {min > 0 && (
@@ -45,7 +46,9 @@ const StatCard = ({ title, value, trend, unit, icon }: StatCardProps) => {
     return (
       <Stack direction="row" alignItems="baseline" spacing={0.5}>
         <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
-          {Number(value).toLocaleString()}
+          {Number(value).toLocaleString(undefined, {
+            maximumFractionDigits: unit === '%' ? 1 : 0
+          })}
         </Typography>
         {unit && unit !== '초' && (
           <Typography variant="body2" color="text.secondary">
@@ -59,38 +62,36 @@ const StatCard = ({ title, value, trend, unit, icon }: StatCardProps) => {
   return (
     <Card sx={{ height: '100%', boxShadow: 1 }}>
       <CardContent>
-        <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
-          <Box>
-            <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+        <Box>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            sx={{ mb: 1 }}
+          >
+            <Typography variant="subtitle2" color="text.secondary">
               {title}
             </Typography>
 
-            {renderValue()}
+            <Box sx={{ display: 'flex', color: 'text.secondary' }}>
+              {icon}
+            </Box>
+          </Stack>
 
-            <Stack direction="row" spacing={0.5} alignItems="center" sx={{ mt: 1 }}>
-              <TrendIcon sx={{ fontSize: '1rem', color: trendColor }} />
+          {renderValue()}
 
-              <Typography variant="caption" sx={{ color: trendColor, fontWeight: 'medium' }}>
-                {trendText}
-              </Typography>
+          <Stack direction="row" spacing={0.5} alignItems="center" sx={{ mt: 1 }}>
+            <TrendIcon sx={{ fontSize: '1rem', color: trendColor }} />
 
-              <Typography variant="caption" color="text.secondary">
-                전일 대비
-              </Typography>
-            </Stack>
-          </Box>
+            <Typography variant="caption" sx={{ color: trendColor, fontWeight: 'medium' }}>
+              {trendText}
+            </Typography>
 
-          <Box
-            sx={{
-              p: 1,
-              borderRadius: 2,
-              display: 'flex',
-              color: 'text.secondary',
-            }}
-          >
-            {icon}
-          </Box>
-        </Stack>
+            <Typography variant="caption" color="text.secondary">
+              전일 대비
+            </Typography>
+          </Stack>
+        </Box>
       </CardContent>
     </Card>
   );

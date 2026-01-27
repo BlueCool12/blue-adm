@@ -57,7 +57,7 @@ export const TrafficChart = ({ data }: TrafficChartProps) => {
               curve: 'natural',
             },
           ]}
-          margin={{ left: 0, right: 10, top: 20, bottom: 10 }}
+          margin={{ left: 0, right: 20, top: 20, bottom: 10 }}
           slotProps={{
             legend: {
               direction: 'horizontal',
