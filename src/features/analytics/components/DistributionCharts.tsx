@@ -10,7 +10,7 @@ const COLORS: Record<string, string> = {
   'GitHub': '#6E5494',
   'OKKY': '#0090F9',
   'JobKorea': '#003399',
-  'Social': '#9C27B0',
+  'Social': '#E1306C',
   'Direct': '#757575',
   'Others': '#FF9800',
 
@@ -18,6 +18,8 @@ const COLORS: Record<string, string> = {
   'Desktop': '#1565C0',
   'Mobile': '#42A5F5',
   'Tablet': '#90CAF9',
+  'Bot': '#9E9E9E',
+  'Unknown': '#BDBDBD',
 };
 
 const DEFAULT_PALETTE = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
