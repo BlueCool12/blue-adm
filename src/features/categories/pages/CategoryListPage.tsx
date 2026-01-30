@@ -1,23 +1,30 @@
-import { Box, Button, CircularProgress, Container, Grid, List, MenuItem, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, Container, Grid, MenuItem, Paper, TextField, Typography } from "@mui/material";
 import { useCategories, type Category } from "@/features/categories/hooks/useCategories";
-import React, { useMemo, useState } from "react";
-import { CategoryItem } from "@/features/categories/components/CategoryItem";
-import { AddRounded, FolderOffRounded, RefreshRounded, RemoveCircleOutlineRounded, SaveRounded } from "@mui/icons-material";
+import React, { useEffect, useMemo, useState } from "react";
+import { AddRounded, RefreshRounded, RemoveCircleOutlineRounded, SaveRounded } from "@mui/icons-material";
 import { flattenCategories } from "@/features/categories/utils/category.utils";
 import { useCreateCategory } from "@/features/categories/hooks/useCreateCategory";
 import { useUpdateCategory } from "@/features/categories/hooks/useUpdateCategory";
 import { useDeleteCategory } from "@/features/categories/hooks/useDeleteCategory";
 import { useAlert } from "@/shared/hooks/useAlert";
 import ConfirmDialog from "@/shared/components/ConfirmDialog";
+import { CategorySortableList } from "../components/CategorySortableList";
+import { useReorderCategory } from "../hooks/useReorderCategory";
 
 export default function CategoryListPage() {
 
   const { showAlert } = useAlert();
 
-  const { data: categories = [], isLoading } = useCategories();
+  const { data: serverCategories = [], isLoading } = useCategories();
+  const [items, setItems] = useState<Category[]>([]);
+
+  useEffect(() => {
+    if (serverCategories) setItems(serverCategories);
+  }, [serverCategories]);
 
   const { mutate: createCategory, isPending: isCreating } = useCreateCategory();
   const { mutate: updateCategory, isPending: isUpdating } = useUpdateCategory();
+  const { mutate: reorderCategory } = useReorderCategory();
   const { mutate: deleteCategory, isPending: isDeleting } = useDeleteCategory();
 
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -29,7 +36,7 @@ export default function CategoryListPage() {
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
 
-  const categoryOptions = useMemo(() => flattenCategories(categories), [categories]);
+  const categoryOptions = useMemo(() => flattenCategories(items), [items]);
 
   const handleSelect = (category: Category) => {
     setSelectedId(category.id);
@@ -84,6 +91,17 @@ export default function CategoryListPage() {
     }
   };
 
+  const handleReorder = (newItems: Category[], changeIds: number[]) => {
+    const previousItems = items;
+    setItems(newItems);
+
+    reorderCategory(changeIds, {
+      onError: () => {
+        setItems(previousItems);
+      }
+    })
+  };
+
   return (
     <Container maxWidth="lg" disableGutters>
       <Box sx={{ mb: 4 }}>
@@ -96,7 +114,7 @@ export default function CategoryListPage() {
       </Box>
 
       <Grid container spacing={3} alignItems="flex-start">
-        <Grid size={{ xs: 12, md: 4 }} sx={{ position: 'sticky', top: 20, zIndex: 10 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Paper
             elevation={3}
             sx={{
@@ -240,39 +258,13 @@ export default function CategoryListPage() {
         </Grid>
 
         <Grid size={{ xs: 12, md: 8 }}>
-          <Paper elevation={3} sx={{ borderRadius: '12px', overflow: 'hidden', minHeight: '600px' }}>
-            <Box sx={{ p: 2, bgcolor: 'background.default', borderBottom: '1px solid #eee' }}>
-              <Typography variant="subtitle1" fontWeight="bold">
-                카테고리 목록
-              </Typography>
-            </Box>
-
-            <Box sx={{ p: 0 }}>
-              {isLoading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}>
-                  <CircularProgress />
-                </Box>
-              ) : categories.length === 0 ? (
-                <Stack alignItems="center" justifyContent="center" spacing={2} sx={{ py: 10, color: 'text.secondary' }}>
-                  <FolderOffRounded sx={{ fontSize: 60, opacity: 0.5 }} />
-                  <Typography variant="body1">
-                    등록된 카테고리가 없습니다.
-                  </Typography>
-                </Stack>
-              ) : (
-                <List component="nav">
-                  {categories.map((category) => (
-                    <CategoryItem
-                      key={category.id}
-                      category={category}
-                      selectedId={selectedId}
-                      onSelect={handleSelect}
-                    />
-                  ))}
-                </List>
-              )}
-            </Box>
-          </Paper>
+          <CategorySortableList
+            items={items}
+            isLoading={isLoading}
+            selectedId={selectedId}
+            onSelect={handleSelect}
+            onReorder={handleReorder}
+          />
         </Grid>
       </Grid>
 
