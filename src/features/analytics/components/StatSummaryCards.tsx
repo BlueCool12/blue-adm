@@ -9,6 +9,7 @@ export interface StatCardProps {
   trend: number;
   unit: string;
   icon: React.ReactNode;
+  isDescendingGood?: boolean;
 }
 
 const formatDuration = (seconds: number) => {
@@ -17,12 +18,14 @@ const formatDuration = (seconds: number) => {
   return { min, sec };
 };
 
-const StatCard = ({ title, value, trend, unit, icon }: StatCardProps) => {
+const StatCard = ({ title, value, trend, unit, icon, isDescendingGood = false }: StatCardProps) => {
 
-  const isPositive = trend >= 0;
-  const TrendIcon = isPositive ? TrendingUpRounded : TrendingDownRounded;
-  const trendColor = isPositive ? 'primary.main' : 'error.main';
-  const trendText = `${isPositive ? '+' : ''}${trend}%`;
+  const isTrendUp = trend >= 0;
+  const TrendIcon = isTrendUp ? TrendingUpRounded : TrendingDownRounded;
+
+  const isGood = isDescendingGood ? trend <= 0 : trend >= 0;
+  const trendColor = isGood ? 'primary.main' : 'error.main';
+  const trendText = `${isTrendUp ? '+' : ''}${trend}%`;
 
   const renderValue = () => {
     if (unit === '초') {
@@ -134,6 +137,7 @@ export const StatSummaryCards = () => {
           <StatCard
             {...stat}
             icon={getIcon(stat.title)}
+            isDescendingGood={stat.title.includes('이탈률')}
           />
         </Grid>
       ))}
