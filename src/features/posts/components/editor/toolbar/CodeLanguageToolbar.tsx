@@ -9,8 +9,10 @@ const CODE_LANGUAGES = [
   { label: 'Typescript', value: 'typescript' },
   { label: 'Java', value: 'java' },
   { label: 'Python', value: 'python' },
+  { label: 'SQL', value: 'sql' },
   { label: 'HTML', value: 'html' },
   { label: 'CSS', value: 'css' },
+  { label: 'Markdown', value: 'markdown' },
 ];
 
 export default function CodeLanguageToolbar() {
