@@ -92,6 +92,7 @@ export default function LoginPage() {
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ width: '100%' }}>
             <Stack spacing={2.5}>
               <TextField
+                name="username"
                 label="아이디"
                 required
                 fullWidth
@@ -104,6 +105,7 @@ export default function LoginPage() {
               />
 
               <TextField
+                name="password"
                 label="비밀번호"
                 required
                 fullWidth
