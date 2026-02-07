@@ -1,9 +1,12 @@
+import { Suspense, useState } from "react";
+import { Outlet } from "react-router-dom";
+import { Box, Drawer, styled } from "@mui/material";
+
 import { Header } from "@/shared/components/Header";
 import { Sidebar } from "@/shared/components/Sidebar";
 import { Loading } from "@/shared/components/Loading";
-import { Box, Drawer, styled } from "@mui/material";
-import { Suspense, useState } from "react";
-import { Outlet } from "react-router-dom";
+
+import { AiAssistantButton } from "@/features/ai/components/AiAssistantButton";
 
 const DRAWER_WIDTH = 260;
 
@@ -40,6 +43,7 @@ export function RootLayout() {
         </Box>
       </Box>
 
+      <AiAssistantButton />
     </Box>
   );
 }
