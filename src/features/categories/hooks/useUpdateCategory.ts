@@ -24,8 +24,8 @@ export const useUpdateCategory = () => {
     },
     onError: (error: AxiosError<NestErrorResponse>) => {
       const serverMessage = error.response?.data?.message;
-      const displayMessage = Array.isArray(serverMessage)
-        ? serverMessage[0]
+      const displayMessage = typeof serverMessage === 'string'
+        ? serverMessage
         : '카테고리 수정에 실패했습니다.';
 
       console.error("Category update failed:", error);

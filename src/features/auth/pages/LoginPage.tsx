@@ -15,8 +15,8 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation() as Location & { state?: { from?: Location } };
 
-  const [loginId, setLoginId] = useState('');
-  const [password, setPassword] = useState('');
+  const [loginId, setLoginId] = useState('guest');
+  const [password, setPassword] = useState('guest1234');
   const [remember, setRemember] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);

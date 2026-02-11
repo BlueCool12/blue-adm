@@ -18,9 +18,9 @@ export const useDeleteCategory = () => {
     },
     onError: (error: AxiosError<NestErrorResponse>) => {
       const serverMessage = error.response?.data?.message;
-      const displayMessage = Array.isArray(serverMessage)
-        ? serverMessage[0]
-        : serverMessage || '카테고리 삭제 중 오류가 발생했습니다.';
+      const displayMessage = typeof serverMessage === 'string'
+        ? serverMessage
+        : '카테고리 삭제 중 오류가 발생했습니다.';
 
       console.error("Category deletion failed:", error);
       showAlert(displayMessage, 'error');

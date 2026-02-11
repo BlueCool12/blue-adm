@@ -5,6 +5,8 @@ import { useSuggestedTopic } from '@/features/ai/hooks/useSuggestedTopic';
 import { AiAssistantContent } from '@/features/ai/components/AiAssistantContent';
 import { useAiChat } from '@/features/ai/hooks/useAiChat';
 import type { ChatMessage } from '@/features/ai/types';
+import type { AxiosError } from 'axios';
+import type { NestErrorResponse } from '@/shared/types/api';
 
 export function AiAssistantButton() {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -33,11 +35,18 @@ export function AiAssistantButton() {
           };
           setMessages((prev) => [...prev, assistantMessage]);
         },
-        onError: () => {
+        onError: (error: AxiosError<NestErrorResponse>) => {
+          const serverMessage = error.response?.data?.message;
+          const displayMessage = Array.isArray(serverMessage)
+            ? serverMessage[0]
+            : typeof serverMessage === 'string'
+              ? serverMessage
+              : "죄송합니다. 오류가 발생했습니다. 다시 시도해주세요.";
+
           const errorMessage: ChatMessage = {
             id: (Date.now() + 1).toString(),
             role: 'assistant',
-            content: "죄송합니다. 오류가 발생했습니다. 다시 시도해주세요.",
+            content: displayMessage,
           };
           setMessages((prev) => [...prev, errorMessage]);
         }
@@ -45,7 +54,7 @@ export function AiAssistantButton() {
     );
   };
 
-  const { data, isLoading, isError, refetch, isFetching } = useSuggestedTopic();
+  const { data, isLoading, isError, refetch, isFetching, error: topicError } = useSuggestedTopic();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -106,6 +115,7 @@ export function AiAssistantButton() {
           topicData={data}
           isTopicLoading={isLoading}
           isTopicError={isError}
+          topicError={topicError || undefined}
           isTopicFetching={isFetching}
           onTopicRefresh={handleRefresh}
           messages={messages}

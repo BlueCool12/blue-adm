@@ -6,11 +6,14 @@ import { useMe } from '@/features/auth/hooks/useMe';
 import { useSuggestedSlug } from '@/features/ai/hooks/useSuggestedSlug';
 import { useSuggestedSummary } from '@/features/ai/hooks/useSuggestedSummary';
 import type { ChatMessage } from '@/features/ai/types';
+import type { AxiosError } from 'axios';
+import type { NestErrorResponse } from '@/shared/types/api';
 
 interface AiAssistantContentProps {
   topicData?: SuggestedTopic;
   isTopicLoading: boolean;
   isTopicError: boolean;
+  topicError?: AxiosError<NestErrorResponse>;
   isTopicFetching: boolean;
   onTopicRefresh: () => void;
   messages: ChatMessage[];
@@ -51,6 +54,7 @@ export function AiAssistantContent({
   topicData,
   isTopicLoading,
   isTopicError,
+  topicError,
   isTopicFetching,
   onTopicRefresh,
   messages,
@@ -64,12 +68,12 @@ export function AiAssistantContent({
   // Slug Tool State
   const [slugInput, setSlugInput] = useState('');
   const [slugCopied, setSlugCopied] = useState(false);
-  const { mutate: getSlug, data: slugData, isPending: isSlugPending } = useSuggestedSlug();
+  const { mutate: getSlug, data: slugData, isPending: isSlugPending, error: slugError } = useSuggestedSlug();
 
   // Summary Tool State
   const [summaryInput, setSummaryInput] = useState('');
   const [summaryCopied, setSummaryCopied] = useState(false);
-  const { mutate: getSummary, data: summaryData, isPending: isSummaryPending } = useSuggestedSummary();
+  const { mutate: getSummary, data: summaryData, isPending: isSummaryPending, error: summaryError } = useSuggestedSummary();
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -266,7 +270,14 @@ export function AiAssistantContent({
               >
                 <ErrorOutlineRounded color="error" />
                 <Typography variant="body2" color="error.main" fontWeight="medium">
-                  주제를 불러오지 못했습니다.
+                  {(() => {
+                    const serverMessage = topicError?.response?.data?.message;
+                    return Array.isArray(serverMessage)
+                      ? serverMessage[0]
+                      : typeof serverMessage === 'string'
+                        ? serverMessage
+                        : "주제를 불러오지 못했습니다.";
+                  })()}
                 </Typography>
               </Paper>
             ) : isTopicLoading ? (
@@ -319,6 +330,19 @@ export function AiAssistantContent({
               </IconButton>
             </Box>
 
+            {slugError && (
+              <Typography variant="caption" color="error" sx={{ display: 'block', mb: 1, ml: 1 }}>
+                {(() => {
+                  const serverMessage = slugError.response?.data?.message;
+                  return Array.isArray(serverMessage)
+                    ? serverMessage[0]
+                    : typeof serverMessage === 'string'
+                      ? serverMessage
+                      : "Slug 생성 중 오류가 발생했습니다.";
+                })()}
+              </Typography>
+            )}
+
             {slugData?.slug && (
               <Paper
                 variant="outlined"
@@ -366,6 +390,19 @@ export function AiAssistantContent({
                 {isSummaryPending ? <CircularProgress size={20} /> : <SummarizeRounded fontSize="small" />}
               </IconButton>
             </Box>
+
+            {summaryError && (
+              <Typography variant="caption" color="error" sx={{ display: 'block', mb: 1, ml: 1 }}>
+                {(() => {
+                  const serverMessage = summaryError.response?.data?.message;
+                  return Array.isArray(serverMessage)
+                    ? serverMessage[0]
+                    : typeof serverMessage === 'string'
+                      ? serverMessage
+                      : "요약 중 오류가 발생했습니다.";
+                })()}
+              </Typography>
+            )}
 
             {summaryData?.summary && (
               <Paper

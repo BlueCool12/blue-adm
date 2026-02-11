@@ -1,7 +1,9 @@
+import { useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import type { NestErrorResponse } from "@/shared/types/api";
 import { http } from "@/shared/api/http";
 import { useAlert } from "@/shared/hooks/useAlert";
-import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 
 interface CreateDraftResponse {
   id: number;
@@ -19,9 +21,14 @@ export function useCreateDraft() {
     onSuccess: (data) => {
       navigate(`/posts/${data.id}/edit`);
     },
-    onError: (error) => {
+    onError: (error: AxiosError<NestErrorResponse>) => {
+      const serverMessage = error.response?.data?.message;
+      const displayMessage = typeof serverMessage === 'string'
+        ? serverMessage
+        : '초안 작성 중 오류가 발생했습니다.';
+
       console.error("Draft creation failed:", error);
-      showAlert("초안 작성에 실패했습니다.", 'error');
+      showAlert(displayMessage, 'error');
     }
   });
 }

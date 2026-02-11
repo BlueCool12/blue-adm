@@ -22,8 +22,8 @@ export const useReorderCategory = () => {
     },
     onError: (error: AxiosError<NestErrorResponse>) => {
       const serverMessage = error.response?.data?.message;
-      const displayMessage = Array.isArray(serverMessage)
-        ? serverMessage[0]
+      const displayMessage = typeof serverMessage === 'string'
+        ? serverMessage
         : '카테고리 순서 변경에 실패했습니다.';
 
       console.error("Category reorder failed:", error);
