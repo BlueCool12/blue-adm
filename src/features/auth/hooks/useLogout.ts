@@ -14,7 +14,6 @@ export function useLogout() {
       return await http.post('/auth/logout');
     },
     onMutate: async () => {
-      clearAccessToken();
       qc.setQueryData(authKeys.me(), null);
     },
     onSuccess: () => {
@@ -25,6 +24,7 @@ export function useLogout() {
       navigate('/login', { replace: true });
     },
     onSettled: () => {
+      clearAccessToken();
       qc.clear();
     }
   })
