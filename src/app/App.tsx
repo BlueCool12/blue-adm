@@ -12,6 +12,7 @@ import '@/shared/styles/lexical.css';
 import Prism from 'prismjs';
 if (typeof window !== 'undefined') window.Prism = Prism;
 import 'prismjs/themes/prism-tomorrow.css';
+import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-typescript';
 import 'prismjs/components/prism-java';

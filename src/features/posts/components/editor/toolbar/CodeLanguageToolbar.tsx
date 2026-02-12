@@ -13,6 +13,7 @@ const CODE_LANGUAGES = [
   { label: 'HTML', value: 'html' },
   { label: 'CSS', value: 'css' },
   { label: 'Markdown', value: 'markdown' },
+  { label: 'Plain Text', value: 'plain' },
 ];
 
 export default function CodeLanguageToolbar() {
