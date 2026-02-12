@@ -38,6 +38,8 @@ const PostEditorTheme = {
     tag: 'token tag',
     url: 'token url',
     variable: 'token variable',
+    decorator: 'token decorator',
+    annotation: 'token decorator',
   },
   text: {
     bold: 'editor-text-bold',
