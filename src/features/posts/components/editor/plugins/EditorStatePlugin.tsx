@@ -2,6 +2,7 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import type { PostEditorHandle } from "@/features/posts/components/editor/PostEditorTypes";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
+import { $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
 import { $getRoot, $insertNodes } from "lexical";
 
 interface PostEditorStatePluginProps {
@@ -20,8 +21,10 @@ const PostEditorStatePlugin = forwardRef<PostEditorHandle, PostEditorStatePlugin
           const json = JSON.stringify(editor.getEditorState().toJSON());
           // HTML
           const html = $generateHtmlFromNodes(editor, null);
+          // Markdown
+          const markdown = $convertToMarkdownString(TRANSFORMERS);
 
-          return { json, html }
+          return { json, html, markdown }
         });
       },
     }));

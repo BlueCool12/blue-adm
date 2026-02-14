@@ -57,8 +57,8 @@ export default function PostEditPage() {
   }, [post]);
 
   const getPayload = () => {
-    const { html, json } = editorRef.current?.getContent() || { html: '', json: '' };
-    return { title, content: html, contentJson: json, description: publishData.description, categoryId: publishData.categoryId }
+    const { html, json, markdown } = editorRef.current?.getContent() || { html: '', json: '', markdown: '' };
+    return { title, content: html, contentJson: json, contentMarkdown: markdown, description: publishData.description, categoryId: publishData.categoryId }
   }
 
   const handlePublishDataChange = <K extends keyof PublishDataState>(key: K, value: PublishDataState[K]) => {

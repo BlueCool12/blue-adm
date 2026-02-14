@@ -1,5 +1,5 @@
 export interface PostEditorHandle {
-  getContent: () => { json: string; html: string; };
+  getContent: () => { json: string; html: string; markdown: string; };
 }
 
 export interface PostEditorProps {

@@ -8,6 +8,8 @@ import { useAlert } from "@/shared/hooks/useAlert";
 export interface UpdatePostPayload {
   title: string;
   content: string;
+  contentJson: string;
+  contentMarkdown: string;
   slug?: string | null;
   description?: string;
   categoryId?: number;

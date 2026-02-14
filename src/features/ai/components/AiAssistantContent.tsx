@@ -191,7 +191,7 @@ export function AiAssistantContent({
                   borderRadius: 2,
                 }}
               >
-                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>{msg.content}</Typography>
+                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>{msg.content}</Typography>
               </Paper>
             </Box>
           ))}
@@ -415,7 +415,7 @@ export function AiAssistantContent({
                   gap: 1
                 }}
               >
-                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap' }}>
+                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
                   {summaryData.summary}
                 </Typography>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
