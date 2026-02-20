@@ -280,9 +280,10 @@ export default function PostListPage() {
                   <TableRow>
                     <TableCell width={80} align="center">번호</TableCell>
                     <TableCell>제목</TableCell>
-                    <TableCell width={120} align="center">상태</TableCell>
-                    <TableCell width={150} align="center">작성일</TableCell>
-                    <TableCell width={120} align="center">관리</TableCell>
+                    <TableCell width={100} align="center">상태</TableCell>
+                    <TableCell width={120} align="center">작성일</TableCell>
+                    <TableCell width={120} align="center">발행일</TableCell>
+                    <TableCell width={100} align="center">관리</TableCell>
                   </TableRow>
                 </TableHead>
 
@@ -347,8 +348,14 @@ export default function PostListPage() {
                           })()}
                         </TableCell>
 
-                        <TableCell color="text.secondary" sx={{ fontSize: '0.875rem' }}>
+                        <TableCell color="text.secondary" sx={{ fontSize: '0.875rem' }} align="center">
                           {dayjs(post.createdAt).format('YYYY-MM-DD')}
+                        </TableCell>
+
+                        <TableCell color="text.secondary" sx={{ fontSize: '0.875rem' }} align="center">
+                          {post.publishInfo?.publishedAt
+                            ? dayjs(post.publishInfo.publishedAt).format('YYYY-MM-DD')
+                            : '-'}
                         </TableCell>
 
                         <TableCell align="center">
