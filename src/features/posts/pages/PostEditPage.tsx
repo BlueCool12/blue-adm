@@ -13,6 +13,8 @@ import { useAlert } from "@/shared/hooks/useAlert";
 
 import { PostStatus } from "@/features/posts/types/post";
 import type { PostEditorHandle } from "@/features/posts/components/editor/PostEditorTypes";
+import { useAutoSave } from "@/features/posts/hooks/useAutoSave";
+import ConfirmDialog from "@/shared/components/ConfirmDialog";
 
 export interface PublishDataState {
   slug: string;
@@ -33,6 +35,8 @@ export default function PostEditPage() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRestoreConfirmOpen, setIsRestoreConfirmOpen] = useState(false);
+  const isRestoreChecked = useRef(false);
   const [title, setTitle] = useState("");
   const [publishData, setPublishData] = useState<PublishDataState>({
     slug: "", description: "", categoryId: 0, status: PostStatus.DRAFT as PostStatus,
@@ -41,6 +45,7 @@ export default function PostEditPage() {
   const { data: post, isPending: isLoading } = usePost(postId);
   const { mutate: updatePost, isPending: isUpdating } = useUpdatePost();
   const { sendPreviewData } = usePostPreview(IFRAME_SITE_URL, iframeRef, isPreviewOpen, title, post, editorRef);
+  const { saveAutoSave, autoSaveData } = useAutoSave(postId);
 
   useEffect(() => {
     if (post) {
@@ -55,6 +60,45 @@ export default function PostEditPage() {
       }
     }
   }, [post]);
+
+  // 자동 저장 복구 제안
+  useEffect(() => {
+    if (isRestoreChecked.current || !autoSaveData || !post) return;
+
+    const hasDiff = autoSaveData.title !== post.title || autoSaveData.contentJson !== post.contentJson;
+    if (hasDiff) {
+      setIsRestoreConfirmOpen(true);
+    }
+    isRestoreChecked.current = true;
+  }, [autoSaveData, post]);
+
+  const handleRestore = () => {
+    if (autoSaveData) {
+      if (autoSaveData.title) setTitle(autoSaveData.title);
+      if (autoSaveData.contentJson) {
+        editorRef.current?.setContent(autoSaveData.contentJson);
+      }
+      if (autoSaveData.description || autoSaveData.categoryId) {
+        setPublishData(prev => ({
+          ...prev,
+          description: autoSaveData.description || prev.description,
+          categoryId: autoSaveData.categoryId || prev.categoryId,
+        }));
+      }
+      showAlert('데이터가 복구되었습니다.', 'success');
+    }
+    setIsRestoreConfirmOpen(false);
+  };
+
+  // 30초 주기 자동 저장
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const payload = getPayload();
+      saveAutoSave(payload);
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [saveAutoSave, title, publishData.description, publishData.categoryId]);
 
   const getPayload = () => {
     const { html, json, markdown } = editorRef.current?.getContent() || { html: '', json: '', markdown: '' };
@@ -247,6 +291,21 @@ export default function PostEditPage() {
         data={publishData}
         onChange={handlePublishDataChange}
         onConfirm={handleConfirm}
+      />
+
+      {/* 자동 저장 복구 컨펌 */}
+      <ConfirmDialog
+        open={isRestoreConfirmOpen}
+        title="자동 저장 데이터 복구"
+        content={
+          autoSaveData?.savedAt
+            ? `${new Date(autoSaveData.savedAt).toLocaleString()}에 자동 저장된 데이터가 있습니다. 복구하시겠습니까? (현재 작성 중인 내용은 사라집니다.)`
+            : "마지막으로 자동 저장된 데이터가 있습니다. 복구하시겠습니까? (현재 작성 중인 내용은 사라집니다.)"
+        }
+        confirmText="복구하기"
+        confirmColor="primary"
+        onClose={() => setIsRestoreConfirmOpen(false)}
+        onConfirm={handleRestore}
       />
     </Container>
   );

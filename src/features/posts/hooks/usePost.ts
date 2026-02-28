@@ -6,6 +6,7 @@ export interface PostResponse {
   id: string;
   title: string;
   content: string;
+  contentJson: string;
   publishInfo: {
     slug: string;
     description: string;
