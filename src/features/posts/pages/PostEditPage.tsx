@@ -94,7 +94,8 @@ export default function PostEditPage() {
   useEffect(() => {
     const interval = setInterval(() => {
       const payload = getPayload();
-      saveAutoSave(payload);
+      const { contentMarkdown, ...autoSavePayload } = payload;
+      saveAutoSave(autoSavePayload);
     }, 30000);
 
     return () => clearInterval(interval);
