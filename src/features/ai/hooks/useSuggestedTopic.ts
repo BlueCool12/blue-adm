@@ -1,8 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { http } from '@/shared/api/http';
 import { AI_KEYS } from '@/features/ai/hooks/keys';
+import { pollJob } from '@/features/ai/utils/pollJob';
 import type { AxiosError } from 'axios';
 import type { NestErrorResponse } from '@/shared/types/api';
+import type { AiJobResponse } from '@/features/ai/types';
 
 export interface SuggestedTopic {
   category: string;
@@ -10,12 +12,11 @@ export interface SuggestedTopic {
 }
 
 export function useSuggestedTopic() {
-  return useQuery<SuggestedTopic, AxiosError<NestErrorResponse>>({
-    queryKey: AI_KEYS.topic(),
-    queryFn: async () => {
-      const { data } = await http.get<SuggestedTopic>('/posts/suggest/topic');
-      return data;
+  return useMutation<SuggestedTopic, AxiosError<NestErrorResponse> | Error, void>({
+    mutationKey: AI_KEYS.topic(),
+    mutationFn: async () => {
+      const { data } = await http.post<AiJobResponse>('/ai/suggest/topic');
+      return pollJob<SuggestedTopic>(data.jobId);
     },
-    enabled: false,
   });
 }
