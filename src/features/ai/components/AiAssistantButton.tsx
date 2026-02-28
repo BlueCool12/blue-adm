@@ -5,8 +5,6 @@ import { useSuggestedTopic } from '@/features/ai/hooks/useSuggestedTopic';
 import { AiAssistantContent } from '@/features/ai/components/AiAssistantContent';
 import { useAiChat } from '@/features/ai/hooks/useAiChat';
 import type { ChatMessage } from '@/features/ai/types';
-import type { AxiosError } from 'axios';
-import type { NestErrorResponse } from '@/shared/types/api';
 
 export function AiAssistantButton() {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -29,22 +27,17 @@ export function AiAssistantButton() {
       {
         onSuccess: (response) => {
           const assistantMessage: ChatMessage = {
-            id: (Date.now() + 1).toString(),
+            id: Date.now().toString(),
             role: 'assistant',
             content: response.reply,
           };
           setMessages((prev) => [...prev, assistantMessage]);
         },
-        onError: (error: AxiosError<NestErrorResponse>) => {
-          const serverMessage = error.response?.data?.message;
-          const displayMessage = Array.isArray(serverMessage)
-            ? serverMessage[0]
-            : typeof serverMessage === 'string'
-              ? serverMessage
-              : "죄송합니다. 오류가 발생했습니다. 다시 시도해주세요.";
+        onError: (error: Error) => {
+          const displayMessage = error.message || "죄송합니다. 오류가 발생했습니다. 다시 시도해주세요.";
 
           const errorMessage: ChatMessage = {
-            id: (Date.now() + 1).toString(),
+            id: Date.now().toString(),
             role: 'assistant',
             content: displayMessage,
           };
@@ -54,7 +47,7 @@ export function AiAssistantButton() {
     );
   };
 
-  const { data, isLoading, isError, refetch, isFetching, error: topicError } = useSuggestedTopic();
+  const { mutate: fetchTopic, data, isPending: isTopicPending, isError, error: topicError } = useSuggestedTopic();
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -65,7 +58,7 @@ export function AiAssistantButton() {
   };
 
   const handleRefresh = () => {
-    refetch();
+    fetchTopic();
   };
 
   const open = Boolean(anchorEl);
@@ -113,10 +106,9 @@ export function AiAssistantButton() {
       >
         <AiAssistantContent
           topicData={data}
-          isTopicLoading={isLoading}
+          isTopicPending={isTopicPending}
           isTopicError={isError}
-          topicError={topicError || undefined}
-          isTopicFetching={isFetching}
+          topicError={topicError}
           onTopicRefresh={handleRefresh}
           messages={messages}
           onSendMessage={handleSendMessage}

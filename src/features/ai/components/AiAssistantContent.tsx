@@ -6,15 +6,12 @@ import { useMe } from '@/features/auth/hooks/useMe';
 import { useSuggestedSlug } from '@/features/ai/hooks/useSuggestedSlug';
 import { useSuggestedSummary } from '@/features/ai/hooks/useSuggestedSummary';
 import type { ChatMessage } from '@/features/ai/types';
-import type { AxiosError } from 'axios';
-import type { NestErrorResponse } from '@/shared/types/api';
 
 interface AiAssistantContentProps {
   topicData?: SuggestedTopic;
-  isTopicLoading: boolean;
+  isTopicPending: boolean;
   isTopicError: boolean;
-  topicError?: AxiosError<NestErrorResponse>;
-  isTopicFetching: boolean;
+  topicError?: Error | null;
   onTopicRefresh: () => void;
   messages: ChatMessage[];
   onSendMessage: (text: string) => void;
@@ -52,10 +49,9 @@ function CustomTabPanel(props: TabPanelProps) {
 
 export function AiAssistantContent({
   topicData,
-  isTopicLoading,
+  isTopicPending,
   isTopicError,
   topicError,
-  isTopicFetching,
   onTopicRefresh,
   messages,
   onSendMessage,
@@ -250,9 +246,9 @@ export function AiAssistantContent({
                 size="small"
                 onClick={onTopicRefresh}
                 aria-label="refresh topic"
-                disabled={isTopicFetching}
+                disabled={isTopicPending}
               >
-                {isTopicFetching ? <CircularProgress size={16} /> : <RefreshRounded fontSize="small" />}
+                {isTopicPending ? <CircularProgress size={16} /> : <RefreshRounded fontSize="small" />}
               </IconButton>
             </Box>
 
@@ -270,17 +266,10 @@ export function AiAssistantContent({
               >
                 <ErrorOutlineRounded color="error" />
                 <Typography variant="body2" color="error.main" fontWeight="medium">
-                  {(() => {
-                    const serverMessage = topicError?.response?.data?.message;
-                    return Array.isArray(serverMessage)
-                      ? serverMessage[0]
-                      : typeof serverMessage === 'string'
-                        ? serverMessage
-                        : "주제를 불러오지 못했습니다.";
-                  })()}
+                  {topicError?.message || "주제를 불러오지 못했습니다."}
                 </Typography>
               </Paper>
-            ) : isTopicLoading ? (
+            ) : isTopicPending ? (
               <Paper variant="outlined" sx={{ p: 2 }}>
                 <Skeleton variant="text" width="30%" height={16} sx={{ mb: 1 }} />
                 <Skeleton variant="text" width="80%" height={24} />
@@ -332,14 +321,7 @@ export function AiAssistantContent({
 
             {slugError && (
               <Typography variant="caption" color="error" sx={{ display: 'block', mb: 1, ml: 1 }}>
-                {(() => {
-                  const serverMessage = slugError.response?.data?.message;
-                  return Array.isArray(serverMessage)
-                    ? serverMessage[0]
-                    : typeof serverMessage === 'string'
-                      ? serverMessage
-                      : "Slug 생성 중 오류가 발생했습니다.";
-                })()}
+                {slugError.message || "Slug 생성 중 오류가 발생했습니다."}
               </Typography>
             )}
 
@@ -393,14 +375,7 @@ export function AiAssistantContent({
 
             {summaryError && (
               <Typography variant="caption" color="error" sx={{ display: 'block', mb: 1, ml: 1 }}>
-                {(() => {
-                  const serverMessage = summaryError.response?.data?.message;
-                  return Array.isArray(serverMessage)
-                    ? serverMessage[0]
-                    : typeof serverMessage === 'string'
-                      ? serverMessage
-                      : "요약 중 오류가 발생했습니다.";
-                })()}
+                {summaryError.message || "요약 중 오류가 발생했습니다."}
               </Typography>
             )}
 
