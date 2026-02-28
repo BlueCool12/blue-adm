@@ -13,7 +13,7 @@ export interface UpdatePostPayload {
   slug?: string | null;
   description?: string;
   categoryId?: number;
-  status: PostStatus;
+  status?: PostStatus;
 }
 
 interface UpdatePostArgs {

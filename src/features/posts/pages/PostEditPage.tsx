@@ -74,7 +74,6 @@ export default function PostEditPage() {
         payload: {
           ...payload,
           slug: publishData.slug || null,
-          status: PostStatus.DRAFT,
         },
       },
       {
