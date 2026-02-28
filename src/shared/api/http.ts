@@ -54,9 +54,12 @@ http.interceptors.request.use((config) => {
 
 http.interceptors.response.use(
     (res) => res,
-    async (err: AxiosError) => {
+    async (err: AxiosError<{ message?: string }>) => {
         const res = err.response;
         const cfg = (err.config || {}) as InternalAxiosRequestConfig & { _retry?: boolean };
+
+        const serverMessage = res?.data?.message;
+        if (serverMessage) err.message = serverMessage;
 
         if (cfg.url?.includes('/auth/refresh')) {
             clearAccessToken();
