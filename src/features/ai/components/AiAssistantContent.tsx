@@ -1,4 +1,5 @@
 import { Box, Typography, Paper, IconButton, CircularProgress, Skeleton, TextField, Avatar, Tabs, Tab, Divider } from '@mui/material';
+import ReactMarkdown from 'react-markdown';
 import { RefreshRounded, ErrorOutlineRounded, AutoAwesomeRounded, RocketLaunchRounded, PersonRounded, SmartToyRounded, LinkRounded, ContentCopyRounded, CheckRounded, SummarizeRounded } from '@mui/icons-material';
 import type { SuggestedTopic } from '@/features/ai/hooks/useSuggestedTopic';
 import { useState, useRef, useEffect } from 'react';
@@ -187,7 +188,13 @@ export function AiAssistantContent({
                   borderRadius: 2,
                 }}
               >
-                <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>{msg.content}</Typography>
+                {msg.role === 'user' ? (
+                  <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>{msg.content}</Typography>
+                ) : (
+                  <Box sx={{ '& p': { m: 0, typography: 'body2' }, '& p + p': { mt: 1 }, '& code': { px: 0.5, py: 0.25, borderRadius: 0.5, bgcolor: 'action.selected', fontFamily: 'monospace', fontSize: '0.8rem' }, '& pre': { p: 1.5, borderRadius: 1, bgcolor: 'action.selected', overflow: 'auto', '& code': { p: 0, bgcolor: 'transparent' } }, '& ul, & ol': { m: 0, pl: 2.5 }, wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+                    <ReactMarkdown>{msg.content}</ReactMarkdown>
+                  </Box>
+                )}
               </Paper>
             </Box>
           ))}
