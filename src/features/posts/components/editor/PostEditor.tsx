@@ -23,6 +23,7 @@ import CodeBlockToolbar from '@/features/posts/components/editor/toolbar/CodeBlo
 import LinkToolbar from '@/features/posts/components/editor/toolbar/LinkToolbar';
 import InsertRuleToolbar from '@/features/posts/components/editor/toolbar/InsertRuleToolbar';
 import ImageToolbar from '@/features/posts/components/editor/toolbar/ImageToolbar';
+import AiImageToolbar from '@/features/posts/components/editor/toolbar/AiImageToolbar';
 import AlignmentToolbar from '@/features/posts/components/editor/toolbar/AlignmentToolbar';
 import CodeLanguageToolbar from '@/features/posts/components/editor/toolbar/CodeLanguageToolbar';
 
@@ -85,6 +86,7 @@ export const PostEditor = forwardRef<PostEditorHandle, PostEditorProps>(
             <LinkToolbar />
             <InsertRuleToolbar />
             <ImageToolbar postId={postId} />
+            <AiImageToolbar />
             <Divider orientation='vertical' flexItem sx={{ mx: 0.5, height: 24, alignSelf: 'center' }} />
 
             <AlignmentToolbar />
