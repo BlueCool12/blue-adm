@@ -11,7 +11,7 @@ export interface GenerateImagePayload {
 }
 
 export interface GeneratedImageResult {
-  image_url: string;
+  image_data: string;
 }
 
 export function useGenerateImage() {

@@ -3,11 +3,19 @@ import { INSERT_IMAGE_COMMAND } from "@/features/posts/components/editor/command
 import { CircularProgress, IconButton } from "@mui/material";
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { useGenerateImage } from "@/features/ai/hooks/useGenerateImage";
+import { useImageUpload } from "@/features/posts/hooks/useImageUpload";
 import { $getRoot, $getSelection, $isRangeSelection } from "lexical";
 
-export default function AiImageToolbar() {
+interface AiImageToolbarProps {
+  postId: string;
+}
+
+export default function AiImageToolbar({ postId }: AiImageToolbarProps) {
   const [editor] = useLexicalComposerContext();
-  const { mutate: generateImage, isPending } = useGenerateImage();
+  const { mutate: generateImage, isPending: isGenerating } = useGenerateImage();
+  const { uploadImage, isUploading } = useImageUpload(postId);
+
+  const isPending = isGenerating || isUploading;
 
   const handleClick = () => {
     editor.read(() => {
@@ -30,12 +38,35 @@ export default function AiImageToolbar() {
       generateImage(
         { content: textContent },
         {
-          onSuccess: (result) => {
-            if (result.image_url) {
-              editor.dispatchCommand(INSERT_IMAGE_COMMAND, {
-                src: result.image_url,
-                altText: "AI Generated Image",
-              });
+          onSuccess: async (result) => {
+            if (result.image_data) {
+              try {
+                // 데이터 URL 형식이 아니면 기본적으로 PNG로 가정하여 접두사를 붙여줍니다.
+                const dataUrl = result.image_data.startsWith('data:')
+                  ? result.image_data
+                  : `data:image/png;base64,${result.image_data}`;
+
+                // 브라우저 내장 fetch를 이용해 base64 문자열을 파싱
+                const response = await fetch(dataUrl);
+                const blob = await response.blob();
+
+                // 추출된 blob에서 실제 MIME 타입(예: image/jpeg, image/png)을 가져와 확장자 지정
+                const mimeType = blob.type || 'image/png';
+                const extension = mimeType.split('/')[1] || 'png';
+                const fileName = `ai_generated_image.${extension}`;
+                
+                const file = new File([blob], fileName, { type: mimeType });
+
+                const uploadedUrl = await uploadImage(file);
+                
+                editor.dispatchCommand(INSERT_IMAGE_COMMAND, {
+                  src: uploadedUrl,
+                  altText: "AI Generated Image",
+                });
+              } catch (error) {
+                console.error("Failed to upload AI image", error);
+                alert("생성된 이미지 업로드에 실패했습니다.");
+              }
             }
           },
           onError: (error) => {

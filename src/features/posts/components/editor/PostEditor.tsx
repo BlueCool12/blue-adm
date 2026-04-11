@@ -86,7 +86,7 @@ export const PostEditor = forwardRef<PostEditorHandle, PostEditorProps>(
             <LinkToolbar />
             <InsertRuleToolbar />
             <ImageToolbar postId={postId} />
-            <AiImageToolbar />
+            <AiImageToolbar postId={postId} />
             <Divider orientation='vertical' flexItem sx={{ mx: 0.5, height: 24, alignSelf: 'center' }} />
 
             <AlignmentToolbar />
