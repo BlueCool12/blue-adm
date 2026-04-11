@@ -105,7 +105,7 @@ export default function DashboardPage() {
                 <Grid size={{ xs: 12 }}>
                     <Paper sx={{ p: 3, borderRadius: 3 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>🔥 인기 게시글 (Top 3)</Typography>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>🔥 인기 게시글 (Top 5)</Typography>
 
                             <Tooltip title="글 관리" arrow>
                                 <IconButton onClick={() => navigate('/posts')} size="small">
