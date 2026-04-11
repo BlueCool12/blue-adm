@@ -119,6 +119,7 @@ export default function PostEditPage() {
         payload: {
           ...payload,
           slug: publishData.slug || null,
+          status: publishData.status,
         },
       },
       {
