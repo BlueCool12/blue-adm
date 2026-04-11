@@ -144,7 +144,10 @@ export default function PostListPage() {
                 <Select
                   size="small"
                   value={categoryId}
-                  onChange={(e) => setCategoryId(e.target.value)}
+                  onChange={(e) => {
+                    setCategoryId(e.target.value as number | 'ALL');
+                    setPage(1);
+                  }}
                   sx={{
                     '.MuiOutlinedInput-notchedOutline': { border: 0 },
                     fontWeight: 600,
@@ -201,7 +204,10 @@ export default function PostListPage() {
               }}>
                 <DatePicker
                   value={startDate}
-                  onChange={(newValue) => setStartDate(newValue)}
+                  onChange={(newValue) => {
+                    setStartDate(newValue);
+                    setPage(1);
+                  }}
                   format="YYYY-MM-DD"
                   slotProps={{
                     textField: {
@@ -223,7 +229,10 @@ export default function PostListPage() {
 
                 <DatePicker
                   value={endDate}
-                  onChange={(newValue) => setEndDate(newValue)}
+                  onChange={(newValue) => {
+                    setEndDate(newValue);
+                    setPage(1);
+                  }}
                   format="YYYY-MM-DD"
                   slotProps={{
                     textField: {
